@@ -6,7 +6,7 @@ const app = require('express')();
 
 const FBAuth = require('./util/fbAuth')
 
-
+const {db} = require('./util/admin')
 const {
         getAllScreams,
         postOneScream, 
@@ -16,7 +16,15 @@ const {
         likeScream,
         unlikeScream,
     } = require('./handlers/screams')
-const {signup, login, uploadImage,addUserDetails,getAuthenticatedUser} = require('./handlers/users')
+const {
+        signup, 
+        login, 
+        uploadImage,
+        addUserDetails,
+        getAuthenticatedUser,
+        getUserDetails,
+        markNotificationsRead
+    } = require('./handlers/users')
 
 
 
@@ -46,6 +54,72 @@ app.post('/user/image', FBAuth, uploadImage)
 //edit userdetails
 app.post('/user', FBAuth, addUserDetails)
 app.get('/user', FBAuth, getAuthenticatedUser)
+app.get('/user/:handle', getUserDetails)
+app.post('/notifications',FBAuth, markNotificationsRead)
 
 
 exports.api = functions.region('asia-northeast1').https.onRequest(app)
+
+exports.createNotificationOnLike = functions.region('asia-northeast1').firestore.document('likes/{id}')
+.onCreate((snapshot, context)=> {
+    db.doc(`/screams/${snapshot.data().screamId}`).get()
+    .then(doc => {
+        const notif = {
+            createdAt: new Date().toISOString(),
+                recipient: doc.data().userHandle,
+                sender: snapshot.data().userHandle,
+                type:'like',
+                read: false,
+                screamId: doc.id
+        }
+        if(doc.exists){
+            return db.doc(`/notifications/${snapshot.id}`).set(notif)
+        }
+    })
+    .then(()=>{
+        return 0;
+    })
+    .catch(err => {
+        console.error(err)
+        return 0;
+    })
+})
+exports.deleteNotificationOnUnlike = functions.region('asia-northeast1').firestore.document('likes/{id}')
+.onDelete((snapshot)=> {
+    db.doc(`/notifications/${snapshot.id}`)
+    .delete()
+    .then(()=> {
+        return 0
+    })
+    .catch(err => {
+        console.error(err)
+        return 0
+    })
+})
+
+exports.createNotificationOnComment = functions.region('asia-northeast1').firestore.document('comments/{id}')
+.onCreate((snapshot, context)=> {
+    db.doc(`/screams/${snapshot.data().screamId}`).get()
+    .then(doc => {
+        const notif = {
+            createdAt: new Date().toISOString(),
+            recipient: doc.data().userHandle,
+            sender: snapshot.data().userHandle,
+            type:'comment',
+            read: false,
+            screamId: doc.id
+        }
+        if(doc.exists){
+            return db.doc(`/notifications/${snapshot.id}`).set(notif)
+        }
+    })
+    .then(()=>{
+        return 0;
+    })
+    .catch(err => {
+        console.error(err)
+        return 0;
+    })
+    
+})
+
