@@ -1,4 +1,16 @@
 let db = {
+    users :[
+        {
+            userId: 'aefefasdeaf',
+            email: 'user@email.com',
+            handle: 'user',
+            createdAt : '2020-07-03T10:54:10.755Z',
+            imageUrl: 'image/arfrg/dsarf',
+            bio: 'Hallo, my name is user, nice to meet you',
+            website: 'https://user.com',
+            location: 'London, UK'
+        }
+    ],
     screams: [
         {
             userHandle: 'user',
@@ -6,6 +18,29 @@ let db = {
             createdAt: "2020-07-03T10:54:10.755Z",
             likeCount: 5,
             commentCount: 2
+        }
+    ]
+}
+
+const userDetails = {
+    credentials: {
+        userId: 'aefascgisneifin',
+        email: 'user@email.com',
+        handle: 'user',
+        createdAt: '2020-07-03T10:54:10.755Z',
+        imageUrl: 'immage/jsfefi/jsicnei',
+        nio: 'Hallo, iam user byee',
+        website: 'https://user.com',
+        location: 'London, uk'
+    },
+    likes: [
+        {
+            userHandle: 'user',
+            screamId: 'kjes,lle,,'
+        },
+        {
+            userHandle: 'user',
+            screamId: '728nasdrkksl'
         }
     ]
 }

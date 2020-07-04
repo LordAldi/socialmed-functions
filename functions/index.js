@@ -8,21 +8,27 @@ const FBAuth = require('./util/fbAuth')
 
 
 const {getAllScreams, postOneScream} = require('./handlers/screams')
-const {signup, login, uploadImage} = require('./handlers/users')
+const {signup, login, uploadImage,addUserDetails,getAuthenticatedUser} = require('./handlers/users')
 
 
 
 
-//Screams route
+//-----Screams route---
 app.get('/screams', getAllScreams)
 //post one scream
 app.post('/scream', FBAuth, postOneScream)
-
-//users route
-app.post('/signup', signup)
-
-app.post('/login', login)
+//image upload
 app.post('/user/image', FBAuth, uploadImage)
+//edit userdetails
+app.post('/user', FBAuth, addUserDetails)
+app.get('/user', FBAuth, getAuthenticatedUser)
+
+
+//------users route---
+//signup
+app.post('/signup', signup)
+//login
+app.post('/login', login)
 
 
 exports.api = functions.region('asia-northeast1').https.onRequest(app)
