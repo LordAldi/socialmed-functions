@@ -1,5 +1,4 @@
-const {admin} = require('./admin')
-const {db} = require('../util/admin')
+const {admin, db} = require('./admin')
 
 
 module.exports = ( req, res, next)=> {
@@ -11,7 +10,9 @@ module.exports = ( req, res, next)=> {
         return res.status(403).json({error: 'Unauthorized'})
     }
 
-    admin.auth().verifyIdToken(idToken)
+    admin
+    .auth()
+    .verifyIdToken(idToken)
     .then(decodedToken => {
         req.user = decodedToken
         console.log(decodedToken)
@@ -20,7 +21,7 @@ module.exports = ( req, res, next)=> {
         .limit(1)
         .get()
     })
-    .then(data => {
+    .then((data) => {
         req.user.handle = data.docs[0].data().handle
         return next();
     })
