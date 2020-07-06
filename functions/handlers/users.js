@@ -203,7 +203,7 @@ exports.uploadImage = (req, res) => {
     let imageToBeUploaded = {}
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-        if(mimetype !== 'image/jpeg' && mimetype !== 'iamge/png'){
+        if(mimetype !== 'image/jpeg' && mimetype !== 'image/png'){
             return res.status(400).json({error: 'Wrong file type submitted'})
         }
         //my.image.png
